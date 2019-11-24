@@ -8,7 +8,6 @@ class TestCard(unittest.TestCase):
     """
     Tests that cover the card class
     """
-
     # @unittest.skip
     def test_card_creation(self):
         """
@@ -49,14 +48,14 @@ class TestShoe(unittest.TestCase):
         Test that the shoe is created with the correct number of cards
         """
         number_of_decks = 2
-        self.assertEqual(len(shoe(number_of_decks).shuffle_shoe()), number_of_decks*52)
+        self.assertEqual(len(shoe(number_of_decks).shuffle_shoe()), (number_of_decks*52) + 1)
 
     @unittest.skip
     def test_cut_card(self):
         """
         Test that a cut card is added to the deck
         """
-        print("REPLACE WITH TEST")
+        self.assertEqual(card("cut").get_card_details(), "cutcut")
 
 class TestDeck(unittest.TestCase):
     def test_deck_creation(self):

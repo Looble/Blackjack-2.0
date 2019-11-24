@@ -22,8 +22,10 @@ class shoe:
         point to signify where a new shoe should be generated
         """
         shuffle(self.cards)
+        card_count = len(self.cards)
         # Insert a cut card at between 70 and 80% of the way through the deck to show when a new deck should be generated
-        # shoe.insert(randint(len(shoe)*.7, len(shoe)*.8), card.generate("cut")) #TODO Add card generation with support for cut cards
+        self.cards.insert(randint(round(card_count*.7, 0), round(card_count*.8, 0)), card("cut"))
+        print(self.get_list_of_card_values())
         return self.cards
     
     def get_list_of_card_values(self):
