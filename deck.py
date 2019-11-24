@@ -22,6 +22,11 @@ class card:
                 self.value = "K"
     
     def get_score(self, total_score):
+        """
+        A function that returns the amount that should be added to a player's score
+        In the case of an Ace this can vary between a 1 and an 11 since if a player's current score + 11
+        is above 21 it automatically reverts to a 1.
+        """
         if self.score == 1:
             if (total_score + 11) > 21:
                 return self.score
@@ -32,3 +37,20 @@ class card:
 
     def get_card_details(self):
         return str(str(self.value) + self.suit)
+
+class deck:
+    def __init__(self, *args, **kwargs):
+        suits = ['H', 'S', 'D', 'C']
+        self.cards = []
+        for suit in suits:
+            for value in range(1, 14):
+                self.cards.append(card(value, suit))
+
+    def get_all_card_objects(self):
+        return self.cards
+
+    def get_all_card_values(self):
+        card_values = []
+        for card in self.cards:
+            card_values.append(card.get_card_details())
+        return card_values
