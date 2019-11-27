@@ -1,23 +1,24 @@
 import unittest
-from game import shoe_generation
-from deck import card
+
+from deck import card, deck
+from game import shoe
+
 
 class TestCard(unittest.TestCase):
     """
     Tests that cover the card class
     """
-
     # @unittest.skip
     def test_card_creation(self):
         """
         Test that cards can be created successfully and that values are correct for Aces, numbers
         and pictures (king, queen, jack)
         """
-        self.assertEquals(card(1, "H").get_card_details(), "AH")
-        self.assertEquals(card(4, "H").get_card_details(), "4H")
-        self.assertEquals(card(11, "H").get_card_details(), "JH")
-        self.assertEquals(card(12, "H").get_card_details(), "QH")
-        self.assertEquals(card(13, "H").get_card_details(), "KH")
+        self.assertEqual(card(1, "H").get_card_details(), "AH")
+        self.assertEqual(card(4, "H").get_card_details(), "4H")
+        self.assertEqual(card(11, "H").get_card_details(), "JH")
+        self.assertEqual(card(12, "H").get_card_details(), "QH")
+        self.assertEqual(card(13, "H").get_card_details(), "KH")
         
 
     def test_ace_card_score_calculation(self):
@@ -26,49 +27,48 @@ class TestCard(unittest.TestCase):
         else returning a score of 1
         """
         test_card = card(1, "H")
-        self.assertEquals(test_card.get_score(10), 11) # Test that a new score of 21 will return an 11
-        self.assertEquals(test_card.get_score(9), 11) # Test that a new score of less than 21 will return an 11
-        self.assertEquals(test_card.get_score(13), 1) # Test that a new score above 21 returns a 1
+        self.assertEqual(test_card.get_score(10), 11) # Test that a new score of 21 will return an 11
+        self.assertEqual(test_card.get_score(9), 11) # Test that a new score of less than 21 will return an 11
+        self.assertEqual(test_card.get_score(13), 1) # Test that a new score above 21 returns a 1
 
     def test_picture_card_score_calculation(self):
         """
         Test that picture cards (King, Queen, Jack) all return a score of 10
         """
-        self.assertEquals(card(11, "H").get_score(1), 10)
-        self.assertEquals(card(12, "H").get_score(1), 10)
-        self.assertEquals(card(13, "H").get_score(1), 10)
+        self.assertEqual(card(11, "H").get_score(1), 10)
+        self.assertEqual(card(12, "H").get_score(1), 10)
+        self.assertEqual(card(13, "H").get_score(1), 10)
 
 class TestShoe(unittest.TestCase):
     """
     Tests that cover the deck class
     """
-    @unittest.skip
     def test_shoe_creation(self):
         """
         Test that the shoe is created with the correct number of cards
         """
-        print("REPLACE WITH TEST")
+        number_of_decks = 2
+        self.assertEqual(len(shoe(number_of_decks).shuffle_shoe()), (number_of_decks*52) + 1)
 
     @unittest.skip
     def test_cut_card(self):
         """
         Test that a cut card is added to the deck
         """
-        print("REPLACE WITH TEST")
+        self.assertEqual(card("cut").get_card_details(), "cutcut")
 
-    @unittest.skip
+class TestDeck(unittest.TestCase):
     def test_deck_creation(self):
         """
-        Test that a deck can be created successfully
+        Test that a deck of the correct length can be created successfully
         """
-        print("REPLACE WITH TEST")
+        self.assertEqual(len(deck().get_all_card_objects()), 52)
 
-    @unittest.skip
     def test_cards_in_deck_are_unique(self):
         """
         Test that the cards generated within a deck are unique
         """
-        print("REPLACE WITH TEST")
+        self.assertEqual(len(set(deck().get_all_card_objects())), 52)
 
 class TestGame(unittest.TestCase):
     """
