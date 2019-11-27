@@ -25,7 +25,6 @@ class shoe:
         card_count = len(self.cards)
         # Insert a cut card at between 70 and 80% of the way through the deck to show when a new deck should be generated
         self.cards.insert(randint(round(card_count*.7, 0), round(card_count*.8, 0)), card("cut"))
-        print(self.get_list_of_card_values())
         return self.cards
     
     def get_list_of_card_values(self):
@@ -36,3 +35,11 @@ class shoe:
         for card in self.cards:
             card_list.append(card.get_card_details())
         return card_list
+
+    def get_first_card(self):
+        """
+        Return the first card in the shoe and remove it from the shoe
+        """
+        next_card = self.cards[0]
+        self.cards.pop(0)
+        return next_card

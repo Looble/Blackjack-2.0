@@ -50,12 +50,19 @@ class TestShoe(unittest.TestCase):
         number_of_decks = 2
         self.assertEqual(len(shoe(number_of_decks).shuffle_shoe()), (number_of_decks*52) + 1)
 
-    @unittest.skip
     def test_cut_card(self):
         """
         Test that a cut card is added to the deck
         """
         self.assertEqual(card("cut").get_card_details(), "cutcut")
+
+    def test_draw_card(self):
+        """
+        Test that a card is drawn correctly and that it is removed from the shoe
+        """
+        test_shoe = shoe(1)
+        self.assertEqual((test_shoe.get_first_card()).get_card_details(), "AH")
+        self.assertEqual(len(test_shoe.get_list_of_card_values()), 51)
 
 class TestDeck(unittest.TestCase):
     def test_deck_creation(self):

@@ -54,7 +54,7 @@ class deck:
         suits = ['H', 'S', 'D', 'C']
         self.cards = []
         for suit in suits:
-            for value in range(13):
+            for value in range(1, 14):
                 self.cards.append(card(value, suit))
 
     def get_all_card_objects(self):
