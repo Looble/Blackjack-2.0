@@ -1,38 +1,139 @@
-from random import randint, shuffle
+from cards import card, deck, shoe
 
-from deck import card, deck
 
-class shoe:
-    def __init__(self, number_of_decks, *args, **kwargs):
-        """
-        Creates a new shoe generating the required number of decks and shuffling the shoe to ensure that an appropriate number of cards
-        are in play and that the deck is fair for all players
-        """
-        self.cards = []
-        for _ in range(0, number_of_decks):
-            """
-            Generates a new shoe (set of cards used for play) based on the number of decks required
-            then uses the shuffle_shoe function above
-            """
-            self.cards += deck().get_all_card_objects()
+class player:
+    def __init__(self, *args, **kwargs):
+        self.score = 0
+        self.hand = []
 
-    def shuffle_shoe(self):
+    def get_score(self):
         """
-        Shuffles the shoe using python's inbuilt shuffle function, then adds a cut card at a random
-        point to signify where a new shoe should be generated
+        Calculate a player's score based on their hand, if the player's hand
+        has not yet been dealt score is set to 0
         """
-        shuffle(self.cards)
-        card_count = len(self.cards)
-        # Insert a cut card at between 70 and 80% of the way through the deck to show when a new deck should be generated
-        self.cards.insert(randint(round(card_count*.7, 0), round(card_count*.8, 0)), card("cut"))
-        print(self.get_list_of_card_values())
-        return self.cards
-    
-    def get_list_of_card_values(self):
-        """
-        Return a list of all card values
-        """
-        card_list = []
-        for card in self.cards:
-            card_list.append(card.get_card_details())
-        return card_list
+        score = 0
+        if len(self.hand) == 0:
+            return 0
+        else:
+            soft_possible = False
+            for card in self.hand:
+                addition = card.get_score()
+                if addition == 1:
+                    if score + 11 <= 21:
+                        new_score = score + 11
+                        soft_possible = True
+                    else:
+                        new_score = score + 1
+                else:
+                    new_score = score + addition
+                score = new_score
+            if soft_possible and score > 21:
+                score = score - 10
+        return score
+
+    def soft_score_check(self):
+        if any("A" in card.get_card_details() for card in self.hand):
+            ace_detected = False
+            score = 0
+            for card in self.get_hand():
+                if card.get_score() == 1:
+                    if not ace_detected:
+                        if score + 11 < 21:
+                            score += 11
+                            ace_detected = True
+                        else:
+                            score += 1
+                    else:
+                        score += 1
+                else:
+                    score += card.get_score()
+            if ace_detected and score < 21:
+                return True
+        return False
+
+    def check_bust(self):
+        if self.get_score() > 21:
+            return True
+        return False
+
+    def get_viewable_hand(self):
+        hand = ""
+        for card in self.hand:
+            hand = hand + " " + card.get_card_details()
+        return hand
+
+    def get_hand(self):
+        return self.hand
+
+    def hit_hand(self, shoe):
+        self.hand.append(shoe.get_first_card())
+        return self.hand
+
+class dealer(player):
+    def __init__(self, *args, **kwargs):
+        super(dealer, self).__init__(*args, **kwargs)
+        self.hidden_card = []
+
+    def check_hide_card(self, shoe):
+        if len(self.hand) != 1:
+            self.hit_hand(shoe)
+        else:
+            self.hidden_card.append(shoe.get_first_card())
+
+    def reveal_hidden_card(self):
+        self.hand.append(self.hidden_card[0])
+        return self.hand
+
+    def get_hidden_card_only(self):
+        return self.hidden_card[0]
+
+    def check_hit(self, shoe):
+        if self.get_score() < 17:
+            return True
+        else:
+            return False
+
+def setup_game(num_players=1, num_decks=1):
+    players = []
+    for _ in range (num_players):
+        players.append(player())
+    new_dealer = dealer()
+    play_shoe = shoe(num_decks).shuffle_shoe()
+    return players, new_dealer, play_shoe
+
+def initial_deal(play_shoe, player_list, dealer):
+    for _ in range(2):
+        for player in player_list:
+            player.hit_hand(play_shoe)
+        dealer.check_hide_card(play_shoe)
+
+def dealer_play(play_shoe, dealer):
+    dealer.reveal_hidden_card()
+    print("Dealer shows " + dealer.get_hidden_card_only().get_card_details())
+    print("Dealer's hand " + dealer.get_viewable_hand())
+    score = dealer.get_score()
+    if dealer.soft_score_check():
+        print("Dealer has soft " + str(score))
+    else:
+        print("Dealer has " + str(score))
+    if dealer.get_score() < 17:
+        hit = True
+        while hit:
+            print("Dealer hits")
+            dealer.hit_hand(play_shoe)
+            score = dealer.get_score()
+            print("Dealer's hand " + dealer.get_viewable_hand())
+            if dealer.soft_score_check():
+                print("Dealer has soft " + str(score))
+            else:
+                print("Dealer has " + str(score))
+            hit = dealer.check_hit(play_shoe)
+    if dealer.check_bust():
+        print("Dealer busts")
+        return True
+    else:
+        print("Dealer stands with " + str(dealer.get_score()))
+        return False
+
+game_data = setup_game()
+initial_deal(game_data[2], game_data[0], game_data[1])
