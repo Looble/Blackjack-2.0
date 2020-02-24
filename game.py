@@ -93,9 +93,13 @@ class dealer(player):
         else:
             return False
 
-# players = [player()]
-# dealer = dealer()
-# play_shoe = shoe(1).shuffle_shoe()
+def setup_game(num_players=1, num_decks=1):
+    players = []
+    for _ in range (num_players):
+        players.append(player())
+    new_dealer = dealer()
+    play_shoe = shoe(num_decks).shuffle_shoe()
+    return players, new_dealer, play_shoe
 
 def initial_deal(play_shoe, player_list, dealer):
     for _ in range(2):
@@ -130,3 +134,6 @@ def dealer_play(play_shoe, dealer):
     else:
         print("Dealer stands with " + str(dealer.get_score()))
         return False
+
+game_data = setup_game()
+initial_deal(game_data[2], game_data[0], game_data[1])

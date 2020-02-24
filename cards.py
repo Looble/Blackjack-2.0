@@ -91,7 +91,7 @@ class shoe:
         # Insert a cut card at between 70 and 80% of the way through the deck to show when a new deck should be generated
         self.cards.insert(randint(round(card_count*.7, 0),
                                   round(card_count*.8, 0)), card("cut"))
-        return self.cards
+        return self
 
     def get_list_of_card_values(self):
         """

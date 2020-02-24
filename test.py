@@ -1,7 +1,7 @@
 import unittest
 
 from cards import card, deck, shoe
-from game import dealer, player, initial_deal, dealer_play
+from game import dealer, player, initial_deal, dealer_play, setup_game
 
 
 class TestCard(unittest.TestCase):
@@ -52,7 +52,7 @@ class TestShoe(unittest.TestCase):
         """
         number_of_decks = 2
         self.assertEqual(
-            len(shoe(number_of_decks).shuffle_shoe()), (number_of_decks*52) + 1)
+            len(shoe(number_of_decks).shuffle_shoe().get_list_of_card_values()), (number_of_decks*52) + 1)
 
     def test_cut_card(self):
         """
@@ -92,6 +92,16 @@ class TestGame(unittest.TestCase):
         self.test_shoe.shuffle_shoe()
         self.dealer = dealer()
         self.test_player_list = [player()]
+
+    def test_game_setup(self):
+        """
+        Test that the initial game setup works correctly
+        """
+        game_data = setup_game()
+        players = game_data[0]
+        play_shoe = game_data[2]
+        self.assertEqual(len(players), 1)
+        self.assertEqual(len(play_shoe.get_list_of_card_values()), 53)
 
     def test_initial_deal(self):
         """
