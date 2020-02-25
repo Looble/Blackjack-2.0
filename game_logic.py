@@ -1,6 +1,5 @@
 from cards import card, deck, shoe
 
-
 class player:
     def __init__(self, *args, **kwargs):
         self.score = 0
@@ -93,47 +92,41 @@ class dealer(player):
         else:
             return False
 
-def setup_game(num_players=1, num_decks=1):
-    players = []
-    for _ in range (num_players):
-        players.append(player())
-    new_dealer = dealer()
-    play_shoe = shoe(num_decks).shuffle_shoe()
-    return players, new_dealer, play_shoe
-
-def initial_deal(play_shoe, player_list, dealer):
-    for _ in range(2):
-        for player in player_list:
-            player.hit_hand(play_shoe)
-        dealer.check_hide_card(play_shoe)
-
-def dealer_play(play_shoe, dealer):
-    dealer.reveal_hidden_card()
-    print("Dealer shows " + dealer.get_hidden_card_only().get_card_details())
-    print("Dealer's hand " + dealer.get_viewable_hand())
-    score = dealer.get_score()
-    if dealer.soft_score_check():
-        print("Dealer has soft " + str(score))
+def decide_soft_score_print(current_player):
+    string = ""
+    score = current_player.get_score()
+    if isinstance(current_player, dealer):
+        string += "Dealer has "
     else:
-        print("Dealer has " + str(score))
-    if dealer.get_score() < 17:
-        hit = True
-        while hit:
-            print("Dealer hits")
-            dealer.hit_hand(play_shoe)
-            score = dealer.get_score()
-            print("Dealer's hand " + dealer.get_viewable_hand())
-            if dealer.soft_score_check():
-                print("Dealer has soft " + str(score))
-            else:
-                print("Dealer has " + str(score))
-            hit = dealer.check_hit(play_shoe)
-    if dealer.check_bust():
-        print("Dealer busts")
+        string += "You have "
+    if current_player.soft_score_check():
+        string += ("soft " + str(score))
+    else:
+        if check_blackjack(score, current_player.get_hand()):
+            string += "blackjack"
+        else:
+            string += str(score)
+    print(string)
+
+def check_stand(current_player):
+    string = ""
+    score = current_player.get_score()
+    if isinstance(current_player, dealer):
+        string += "Dealer "
+    else:
+        string += "Player "
+    if current_player.check_bust():
+        string += "busts"
+        print(string)
         return True
     else:
-        print("Dealer stands with " + str(dealer.get_score()))
+        string += "stands with "
+        if check_blackjack(score, current_player.get_hand()):
+            string += "blackjack\n"
+        else:
+            string += str(score) + "\n"
+        print(string)
         return False
 
-game_data = setup_game()
-initial_deal(game_data[2], game_data[0], game_data[1])
+def check_blackjack(score, hand):
+    return score == 21 and len(hand) == 2

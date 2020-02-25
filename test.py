@@ -1,7 +1,8 @@
 import unittest
 
 from cards import card, deck, shoe
-from game import dealer, player, initial_deal, dealer_play, setup_game
+from game_logic import dealer, player
+from gameplay import initial_deal, dealer_play, setup_game
 
 
 class TestCard(unittest.TestCase):
@@ -18,19 +19,6 @@ class TestCard(unittest.TestCase):
         self.assertEqual(card(11, "H").get_card_details(), "JH")
         self.assertEqual(card(12, "H").get_card_details(), "QH")
         self.assertEqual(card(13, "H").get_card_details(), "KH")
-
-    # def test_ace_card_score_calculation(self):
-    #     """
-    #     Test that an ace will return a score of 11 when the new score will be equal to or below 21
-    #     else returning a score of 1
-    #     """
-    #     test_card = card(1, "H")
-    #     # Test that a new score of 21 will return an 11
-    #     self.assertEqual(test_card.get_score(), 11)
-    #     # Test that a new score of less than 21 will return an 11
-    #     self.assertEqual(test_card.get_score(), 11)
-    #     # Test that a new score above 21 returns a 1
-    #     self.assertEqual(test_card.get_score(), 1)
 
     def test_picture_card_score_calculation(self):
         """
