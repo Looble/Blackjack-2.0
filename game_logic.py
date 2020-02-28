@@ -103,20 +103,20 @@ def decide_soft_score_print(current_player):
         string += ("soft " + str(score))
     else:
         if check_blackjack(score, current_player.get_hand()):
-            string += "blackjack"
+            string += "blackjack\n"
         else:
-            string += str(score)
+            string += str(score) + "\n"
     print(string)
 
 def check_stand(current_player):
     string = ""
     score = current_player.get_score()
     if isinstance(current_player, dealer):
-        string += "Dealer "
+        string += "\nDealer "
     else:
-        string += "Player "
+        string += "\nPlayer "
     if current_player.check_bust():
-        string += "busts"
+        string += "busts\n"
         print(string)
         return True
     else:
