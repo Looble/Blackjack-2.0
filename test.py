@@ -79,8 +79,8 @@ class TestGame(unittest.TestCase):
     """
     def setUp(self):
         self.test_shoe = shoe(1)
-        self.dealer = dealer()
-        self.test_player_list = [player()]
+        self.dealer = dealer("Dealer")
+        self.test_player_list = [player(1)]
 
     def test_game_setup(self):
         """

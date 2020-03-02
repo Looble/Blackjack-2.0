@@ -1,9 +1,13 @@
 from cards import card, deck, shoe
 
 class player:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, name, *args, **kwargs):
         self.score = 0
         self.hand = []
+        self.name = str(name)
+
+    def get_name(self):
+        return self.name
 
     def get_score(self):
         """
@@ -68,6 +72,8 @@ class player:
         self.hand.append(shoe.get_first_card())
         return self.hand
 
+    def __str__(self):
+        return self.name
 class dealer(player):
     def __init__(self, *args, **kwargs):
         super(dealer, self).__init__(*args, **kwargs)
@@ -114,7 +120,7 @@ def check_stand(current_player):
     if isinstance(current_player, dealer):
         string += "\nDealer "
     else:
-        string += "\nPlayer "
+        string += "\nPlayer " + str(current_player.get_name()) + " "
     if current_player.check_bust():
         string += "busts\n"
         print(string)
