@@ -69,8 +69,15 @@ class player:
         return self.hand
 
     def hit_hand(self, shoe):
-        self.hand.append(shoe.get_first_card())
+        card = shoe.get_first_card()
+        if card.get_card_details() == "cutcut":
+            card = shoe.get_first_card()
+        self.hand.append(card)
         return self.hand
+
+    def new_game_reset(self):
+        self.score = 0
+        self.hand = []
 
     def __str__(self):
         return self.name

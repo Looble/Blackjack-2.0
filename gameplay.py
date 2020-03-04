@@ -1,6 +1,6 @@
 from game_logic import player, dealer, decide_soft_score_print, check_stand, check_blackjack
-from cards import shoe
-from exceptions import tooManyPlayersError, zeroPlayersError
+from cards import shoe, shoe_check
+from exceptions import tooManyPlayersError, zeroPlayersError, tooManyDecksError, zeroDecksError
 
 def setup_game(num_players=1, num_decks=1):
     players = []
@@ -11,6 +11,9 @@ def setup_game(num_players=1, num_decks=1):
     return players, new_dealer, play_shoe
 
 def initial_deal(play_shoe, player_list, dealer):
+    for player in player_list:
+        player.new_game_reset()
+    dealer.new_game_reset()
     for _ in range(2):
         for player in player_list:
             player.hit_hand(play_shoe)
@@ -142,19 +145,63 @@ def get_number_of_players():
             number_of_players = None
     return number_of_players
 
+def get_number_of_decks():
+    number_of_decks = None
+    while not(type(number_of_decks)) == int:
+        try:
+            number_of_decks = int(input("How many decks would you like in the shoe? "))
+            if number_of_decks == 0:
+                raise zeroDecksError
+            elif number_of_decks > 6:
+                raise tooManyDecksError
+        except zeroDecksError:
+            print("The game needs at least 1 player")
+            number_of_decks = None
+        except tooManyDecksError:
+            print("Sorry you can't have more than 6 players")
+            number_of_decks= None
+        except:
+            number_of_decks = None
+    return number_of_decks
+
+def play_again():
+    decision = " "
+    while not(decision[0] == "y") and not(decision[0] == "n"):
+        decision = input("Would you like to play again? ").lower()
+    if decision[0]=="y":
+        return True
+    else:
+        return False
+    
+def play_game(play_shoe, player_list, dealer, number_of_decks):
+    play_shoe = shoe_check(play_shoe, number_of_decks)
+    initial_deal(play_shoe, player_list, dealer)
+    for player in player_list:
+        user_play(play_shoe, player, dealer)
+    dealer_play(play_shoe, dealer)
+    display_results(check_results(player_list, dealer))
+    if play_again():
+        return True, play_shoe
+    return False
+
 def main():
     number_of_players = get_number_of_players()
+    number_of_decks = get_number_of_decks()
     game_data = setup_game(number_of_players)
 
     player_list = game_data[0]
     play_shoe = game_data[2]
     play_dealer = game_data[1]
+    play_again = True
 
-    initial_deal(play_shoe, player_list, play_dealer)
-    for player in player_list:
-        user_play(play_shoe, player, play_dealer)
-    dealer_play(play_shoe, play_dealer)
-    display_results(check_results(player_list, play_dealer))
+    while play_again:
+        replay = play_game(play_shoe, player_list, play_dealer, number_of_decks)
+        if replay:
+            play_shoe = replay[1]
+        else:
+            play_again = False
+    
+    print("Thanks for playing")
 
 if __name__ == '__main__':
     main()
