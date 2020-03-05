@@ -1,6 +1,6 @@
 # Blackjack-2.0
 ### Welcome
-Thank you for taking an interest in my blackjack game, this is a re-write of a previous project using better coding practices I have learned.
+Thank you for taking an interest in my blackjack game, this is a re-write of a previous project that shows my coding skills.
 ## Getting started
 ### Requirements
 This game requires python 3.x to play
