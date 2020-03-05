@@ -109,3 +109,12 @@ class shoe:
         next_card = self.cards[0]
         self.cards.pop(0)
         return next_card
+
+def shoe_check(play_shoe, number_of_decks):
+    """
+    Checks if the shoe is still valid for play by checking if it still
+    contains a cut card, if it does not then a new shoe is generated
+    """
+    if not("cutcut" in play_shoe.get_list_of_card_values()):
+        play_shoe = shoe(number_of_decks).shuffle_shoe()
+    return play_shoe
