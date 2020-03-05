@@ -3,6 +3,9 @@ from cards import shoe, shoe_check
 from exceptions import tooManyPlayersError, zeroPlayersError, tooManyDecksError, zeroDecksError
 
 def setup_game(num_players=1, num_decks=1):
+    """
+    Set up the game using the specified number of players and decks
+    """
     players = []
     for i in range (num_players):
         players.append(player(i+1))
@@ -13,13 +16,16 @@ def setup_game(num_players=1, num_decks=1):
 def initial_deal(play_shoe, player_list, dealer):
     for player in player_list:
         player.new_game_reset()
-    dealer.new_game_reset()
+    dealer.reset_dealer()
     for _ in range(2):
         for player in player_list:
             player.hit_hand(play_shoe)
         dealer.check_hide_card(play_shoe)
 
 def dealer_play(play_shoe, dealer):
+    """
+    Logic for if the dealer should hit or stand based on their score
+    """
     dealer.reveal_hidden_card()
     print("Now for the dealer")
     print("Dealer reveals: " + dealer.get_hidden_card_only().get_card_details())
@@ -36,6 +42,9 @@ def dealer_play(play_shoe, dealer):
     check_stand(dealer)
 
 def user_play(play_shoe, player, dealer):
+    """
+    Function that allows the user to play
+    """
     print("\nDealer shows:" + dealer.get_viewable_hand())
     hit = True
     while hit == True:
@@ -60,6 +69,10 @@ def user_play(play_shoe, player, dealer):
     check_stand(player)
 
 def check_results(player_list, dealer):
+    """
+    Function that checks if each user has more or less than the dealer and decides if they have
+    won or lost then adds them to a list accordingly.
+    """
     dealer_score = dealer.get_score()
     dealer_hand = dealer.get_hand()
     blackjack_winners = []
@@ -98,6 +111,9 @@ def check_results(player_list, dealer):
     return winners, losers, pushers, blackjack_winners
 
 def display_results(results):
+    """
+    Function that prints the results in a human readable format
+    """
     winners = results[0]
     losers = results[1]
     pushers = results[2]
@@ -108,6 +124,12 @@ def display_results(results):
     print(generate_results_string(blackjack_winners, " wins with blackjack", " win with blackjack"))
 
 def generate_results_string(player_list, singular_result, plural_result):
+    """
+    Given a list and a singular and plural result string, function
+    generates a string based on length of list containing each of the players in
+    that list separated by a comma or & sign as relevant and the relevant result
+    string. This is then returned.
+    """
     string = ""
     plural = len(player_list) > 1
     player_number = 1
@@ -127,6 +149,10 @@ def generate_results_string(player_list, singular_result, plural_result):
     return string
 
 def get_number_of_players():
+    """
+    Logic for getting the number of players, including
+    error handling
+    """
     number_of_players = None
     while not(type(number_of_players)) == int:
         try:
@@ -146,6 +172,10 @@ def get_number_of_players():
     return number_of_players
 
 def get_number_of_decks():
+    """
+    Logic for getting the number of decks that will
+    be in the shoe, including error handling
+    """
     number_of_decks = None
     while not(type(number_of_decks)) == int:
         try:
@@ -165,6 +195,9 @@ def get_number_of_decks():
     return number_of_decks
 
 def play_again():
+    """
+    Logic for checking if a player wishes to play again
+    """
     decision = " "
     while not(decision[0] == "y") and not(decision[0] == "n"):
         decision = input("Would you like to play again? ").lower()
@@ -174,6 +207,11 @@ def play_again():
         return False
     
 def play_game(play_shoe, player_list, dealer, number_of_decks):
+    """
+    Function that calls all relevant functions for gameplay
+    """
+    # Check if the shoe is still valid (contains a cut card) if not,
+    # create a new shoe
     play_shoe = shoe_check(play_shoe, number_of_decks)
     initial_deal(play_shoe, player_list, dealer)
     for player in player_list:
@@ -185,6 +223,10 @@ def play_game(play_shoe, player_list, dealer, number_of_decks):
     return False
 
 def main():
+    """
+    MAIN function, called on file startup that handles
+    game setup and if the player wishes to replay
+    """
     number_of_players = get_number_of_players()
     number_of_decks = get_number_of_decks()
     game_data = setup_game(number_of_players)

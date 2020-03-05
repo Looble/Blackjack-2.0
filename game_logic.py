@@ -7,6 +7,9 @@ class player:
         self.name = str(name)
 
     def get_name(self):
+        """
+        Return the player's name
+        """
         return self.name
 
     def get_score(self):
@@ -35,6 +38,10 @@ class player:
         return score
 
     def soft_score_check(self):
+        """
+        Check if the player has a soft score based on their total score and if they
+        have an Ace in their hand
+        """
         if any("A" in card.get_card_details() for card in self.hand):
             ace_detected = False
             score = 0
@@ -55,20 +62,33 @@ class player:
         return False
 
     def check_bust(self):
+        """
+        Check if the player has bust
+        """
         if self.get_score() > 21:
             return True
         return False
 
     def get_viewable_hand(self):
+        """
+        Return the player's hand in a human readable format
+        """
         hand = ""
         for card in self.hand:
             hand = hand + " " + card.get_card_details()
         return hand
 
     def get_hand(self):
+        """
+        Return the player's hand with the card objects
+        """
         return self.hand
 
     def hit_hand(self, shoe):
+        """
+        Take the first card from the deck and add it to the
+        player's hand
+        """
         card = shoe.get_first_card()
         if card.get_card_details() == "cutcut":
             card = shoe.get_first_card()
@@ -76,6 +96,10 @@ class player:
         return self.hand
 
     def new_game_reset(self):
+        """
+        Reset the player's hand and score at the start
+        of a new game
+        """
         self.score = 0
         self.hand = []
 
@@ -87,25 +111,49 @@ class dealer(player):
         self.hidden_card = []
 
     def check_hide_card(self, shoe):
+        """
+        Give the dealer a hidden card if necessary, else hit
+        """
         if len(self.hand) != 1:
             self.hit_hand(shoe)
         else:
             self.hidden_card.append(shoe.get_first_card())
 
     def reveal_hidden_card(self):
+        """
+        Add the dealer's hidden card to their hand
+        """
         self.hand.append(self.hidden_card[0])
         return self.hand
 
     def get_hidden_card_only(self):
+        """
+        Get the dealer's hidden card
+        """
         return self.hidden_card[0]
 
     def check_hit(self, shoe):
+        """
+        Check if the dealer should hit
+        """
         if self.get_score() < 17:
             return True
         else:
             return False
+    
+    def reset_dealer(self):
+        """
+        Extension of the new_game_reset function inhereted from player
+        that also resets the dealer's hidden card
+        """
+        super().new_game_reset()
+        self.hidden_card = []
 
 def decide_soft_score_print(current_player):
+    """
+    Based on the current player/dealer's score decide what needs to be printed
+    if it is soft or a blackjack
+    """
     string = ""
     score = current_player.get_score()
     if isinstance(current_player, dealer):
@@ -122,6 +170,9 @@ def decide_soft_score_print(current_player):
     print(string)
 
 def check_stand(current_player):
+    """
+    When a player/dealer stands, check what needs to be printed
+    """
     string = ""
     score = current_player.get_score()
     if isinstance(current_player, dealer):
@@ -142,4 +193,7 @@ def check_stand(current_player):
         return False
 
 def check_blackjack(score, hand):
+    """
+    Check if the player/dealer has blackjack
+    """
     return score == 21 and len(hand) == 2
